@@ -9,7 +9,8 @@ const conf = {
 module.exports = {
   // http://codys.club/blog/2015/07/04/webpack-create-multiple-bundles-with-entry-points/#sec-3
   entry: {
-    scheduledHandler: './src/scheduledLambdaHandler.ts',
+    scheduledHandler: './src/scheduledHandler.ts',
+    apiHandler: './src/apiHandler.ts',
   },
   // Use aws-sdk included in lambda-runtime to minimize deployment.
   externals: [{ 'aws-sdk': 'commonjs aws-sdk' }],

@@ -3,8 +3,9 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { LambdaServiceStack } from './LambdaServiceStack';
 import appConfig from './appConfig.json';
-import { SchedulerConfig } from './resources/Scheduler';
+import { SchedulerConfig } from './constructs/Scheduler';
 import { Runtime } from '@aws-cdk/aws-lambda';
+import { ApiConfig } from './constructs/Api';
 
 export interface AppEnvironment {
   envType: string;
@@ -19,6 +20,7 @@ export interface AppConfig {
   nodeJsRuntime: Runtime;
   environments: AppEnvironment[];
   schedulerConfig: SchedulerConfig;
+  apiConfig: ApiConfig;
 }
 
 export class App extends cdk.App {
@@ -35,6 +37,7 @@ export class App extends cdk.App {
         description: config.description,
         nodeJsRuntime: config.nodeJsRuntime,
         schedulerConfig: config.schedulerConfig,
+        apiConfig: config.apiConfig,
         id: (suffix) => `${resourcePrefix}${suffix ? `-${suffix}` : ''}`,
       });
     }

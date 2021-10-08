@@ -1,17 +1,18 @@
+import * as cdk from '@aws-cdk/core';
 import * as iam from '@aws-cdk/aws-iam';
-import { ResourceConfig } from './ResourceConfig';
+import { LambdaServiceStackProps } from '../LambdaServiceStack';
 
-export interface LambdaExecutionRoleConfig extends ResourceConfig {
+export interface LambdaExecutionRoleProps extends LambdaServiceStackProps {
   name: string;
   policies: iam.PolicyStatement[];
 }
 
 export class LambdaExecutionRole extends iam.Role {
-  constructor(config: LambdaExecutionRoleConfig) {
-    super(config.stack!, config.id(config.name), {
+  constructor(stack: cdk.Construct, props: LambdaExecutionRoleProps) {
+    super(stack, props.id(props.name), {
       assumedBy: new iam.CompositePrincipal(
         new iam.ServicePrincipal('lambda.amazonaws.com'),
-        new iam.AccountPrincipal(config.awsAccountId)
+        new iam.AccountPrincipal(props.awsAccountId)
       ),
     });
 
@@ -27,7 +28,7 @@ export class LambdaExecutionRole extends iam.Role {
       })
     );
 
-    for (const statement of config.policies) {
+    for (const statement of props.policies) {
       this.addToPolicy(statement);
     }
   }

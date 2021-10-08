@@ -15,5 +15,10 @@
     "rate": "rate(1 minute)",
     "memorySize": 256,
     "timeout": 30
+  },
+  "apiConfig": {
+    "enabled": true,
+    "memorySize": 256,
+    "timeout": 30
   }
 }
