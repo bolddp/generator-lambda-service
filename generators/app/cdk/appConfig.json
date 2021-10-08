@@ -1,0 +1,23 @@
+{
+  "system": "system",
+  "serviceName": "serviceName",
+  "appName": "appName",
+  "description": "description",
+  "environments": [
+    {
+      "envType": "dev",
+      "awsAccountId": "123",
+      "awsRegion": "eu-west-1"
+    },
+    {
+      "envType": "qa",
+      "awsAccountId": "456",
+      "awsRegion": "eu-west-1"
+    },
+    {
+      "envType": "live",
+      "awsAccountId": "789",
+      "awsRegion": "eu-west-1"
+    }
+  ]
+}
