@@ -4,7 +4,8 @@ import { Api, ApiConfig } from './constructs/Api';
 import { Scheduler, SchedulerConfig } from './constructs/Scheduler';
 
 export interface LambdaServiceStackProps extends cdk.StackProps {
-  resourcePrefix: string;
+  system: string;
+  serviceName: string;
   awsAccountId: string;
   awsRegion: string;
   envType: string;
@@ -15,8 +16,12 @@ export interface LambdaServiceStackProps extends cdk.StackProps {
 }
 
 export class LambdaServiceStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, props?: LambdaServiceStackProps) {
-    super(scope, props?.id(), props);
+  constructor(scope: cdk.Construct, props: LambdaServiceStackProps) {
+    super(scope, props.id(), {
+      env: { account: props.awsAccountId, region: props.awsRegion },
+      stackName: props.id(),
+      description: props.description,
+    });
     this.createStackResources(props!);
   }
 

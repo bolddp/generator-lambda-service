@@ -3,13 +3,6 @@
   "serviceName": "serviceName",
   "description": "description",
   "nodeJsRuntime": "nodejs14.x",
-  "environments": [
-    {
-      "envType": "dev",
-      "awsAccountId": "853290886133",
-      "awsRegion": "eu-west-1"
-    }
-  ],
   "schedulerConfig": {
     "enabled": true,
     "rate": "rate(1 minute)",
@@ -20,5 +13,22 @@
     "enabled": true,
     "memorySize": 256,
     "timeout": 30
-  }
+  },
+  "environments": [
+    {
+      "envType": "dev",
+      "awsAccountId": "853290886133",
+      "awsRegion": "eu-north-1"
+    },
+    {
+      "envType": "qa",
+      "awsAccountId": "123456789012",
+      "awsRegion": "eu-west-1"
+    },
+    {
+      "envType": "live",
+      "awsAccountId": "123456789012",
+      "awsRegion": "eu-west-1"
+    }
+  ]
 }

@@ -28,9 +28,9 @@ export class App extends cdk.App {
     super();
 
     for (const account of config.environments) {
-      const resourcePrefix = `${config.system}-${account.envType}-${config.serviceName}`;
       new LambdaServiceStack(this, {
-        resourcePrefix,
+        system: config.system,
+        serviceName: config.serviceName,
         awsAccountId: account.awsAccountId,
         awsRegion: account.awsRegion,
         envType: account.envType,
@@ -38,7 +38,10 @@ export class App extends cdk.App {
         nodeJsRuntime: config.nodeJsRuntime,
         schedulerConfig: config.schedulerConfig,
         apiConfig: config.apiConfig,
-        id: (suffix) => `${resourcePrefix}${suffix ? `-${suffix}` : ''}`,
+        id: (suffix) =>
+          `${config.system}-${account.envType}-${config.serviceName}${
+            suffix ? `-${suffix}` : ''
+          }`,
       });
     }
   }
