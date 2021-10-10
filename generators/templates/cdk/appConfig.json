@@ -2,7 +2,7 @@
   "system": "system",
   "serviceName": "serviceName",
   "description": "description",
-  "nodeJsRuntime": "nodejs14.x",
+  "nodeJsRuntime": 14,
   "schedulerConfig": {
     "enabled": true,
     "rate": "rate(1 minute)",
