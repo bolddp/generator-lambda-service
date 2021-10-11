@@ -2,7 +2,6 @@
   "name": "placeholder-servicename",
   "version": "1.0.0",
   "description": "placeholder-description",
-  "main": "index.js",
   "scripts": {
     "clean": "node ./node_modules/rimraf/bin.js ./dist ./cdk.out",
     "prebuild": "npm run clean",

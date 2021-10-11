@@ -1,7 +1,9 @@
 import Generator = require('yeoman-generator');
+import { AppConfig, appConfigBuilder } from './appConfigBuilder';
 import { introduction } from './descriptions';
+import { packageJsonTransformer } from './packageJsonTransformer';
 
-interface Answers {
+export interface Answers {
   system?: string;
   serviceName: string;
   description: string;
@@ -21,7 +23,7 @@ interface Answers {
 }
 
 module.exports = class extends Generator {
-  private appConfig: any;
+  private appConfig: AppConfig;
 
   async prompting() {
     this.log(introduction);
@@ -45,7 +47,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'description',
         message:
-          'Description - a brief text that describes the service. This text will be used for describing the AWS Cloudformation stack, among other things:',
+          'Description - a brief text that describes the service. This text will be used for describing the AWS Cloudformation stack and the generated package.json:',
       },
       {
         type: 'number',
@@ -129,55 +131,25 @@ module.exports = class extends Generator {
     ];
 
     const answers: Answers = await this.prompt<Answers>(questions);
-    this.appConfig = {
-      system: answers.system,
-      serviceName: answers.serviceName,
-      description: answers.description,
-      nodeJsRuntime: answers.nodeJsRuntime,
-      schedulerConfig: answers.useScheduledHandler
-        ? {
-            enabled: true,
-            rate: answers.scheduledHandlerRate,
-            memorySize: answers.scheduledHandlerMemorySize,
-            timeout: answers.scheduledHandlerTimeout,
-          }
-        : {
-            enabled: false,
-          },
-      apiConfig: answers.useApi
-        ? {
-            enabled: true,
-            memorySize: answers.apiMemorySize,
-            timeout: answers.apiTimeout,
-          }
-        : {
-            enabled: false,
-          },
-      environments: [
-        answers.environment1,
-        answers.environment2,
-        answers.environment3,
-      ].reduce((p, env) => {
-        if (env) {
-          const [envType, awsAccountId, awsRegion] = env
-            .split(',')
-            .map((s) => s.trim());
-          p.push({ envType, awsAccountId, awsRegion });
-        }
-        return p;
-      }, []),
-    };
+    this.appConfig = appConfigBuilder(answers);
   }
 
   async writing() {
     this.fs.copy(this.templatePath('./src'), this.destinationPath('./src'));
     this.fs.copy(this.templatePath('./cdk'), this.destinationPath('./cdk'));
+    this.fs.copy(
+      this.templatePath('package.json'),
+      this.destinationPath('package.json'),
+      {
+        process: (content) => packageJsonTransformer(content, this.appConfig),
+      }
+    );
     [
       '.gitignore',
       '.npmrc',
+      '.prettierrc',
       'cdk.json',
       'jest.config.js',
-      'package.json',
       'tsconfig.json',
       'webpack.config.js',
       'yarn.lock',
@@ -190,7 +162,7 @@ module.exports = class extends Generator {
     );
   }
 
-  install() {
-    console.log(`Answers: ${JSON.stringify(this.appConfig)}`);
-  }
+  // install() {
+  //   console.log(`Answers: ${JSON.stringify(this.appConfig)}`);
+  // }
 };

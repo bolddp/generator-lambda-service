@@ -6,6 +6,7 @@ import { Scheduler, SchedulerConfig } from './constructs/Scheduler';
 export interface LambdaServiceStackProps extends cdk.StackProps {
   system: string;
   serviceName: string;
+  description: string;
   awsAccountId: string;
   awsRegion: string;
   envType: string;
