@@ -1,8 +1,9 @@
 import { Handler, ScheduledEvent } from 'aws-lambda';
+import { sampleServiceInstance } from './domain/sample/SampleService';
 import { Log } from './utils/Log';
 
-const log = new Log('scheduledHandler');
+const sampleService = sampleServiceInstance.get();
 
-export const handler: Handler = async (event: ScheduledEvent) => {
-  console.log('invoked');
+export const handler: Handler = async (/* event: ScheduledEvent */) => {
+  sampleService.performScheduledMaintenance();
 };

@@ -2,7 +2,7 @@ import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import { errorHandlerFactory } from './ErrorHandler';
-import { rootRouterFactory } from './routes/rootRouter';
+import { sampleRouterFactory } from './routes/sampleRouter';
 
 export default function (app = express()): express.Application {
   app.use(compression());
@@ -22,7 +22,8 @@ export default function (app = express()): express.Application {
   });
   app.use(express.urlencoded({ extended: true }));
 
-  app.use('', rootRouterFactory.get());
+  // Attach routers to app REST API
+  app.use('/samples', sampleRouterFactory.get());
 
   return app;
 }
