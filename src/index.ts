@@ -1,63 +1,69 @@
-import Generator = require('yeoman-generator');
-import { introduction } from './descriptions';
+import * as Generator from 'yeoman-generator';
+import { AppConfig, appConfigBuilder } from './appConfigBuilder';
+import { getQuestions } from './getQuestions';
+import { footer, introduction } from './messages';
+import { packageJsonTransformer } from './packageJsonTransformer';
 
-interface Answers {
-  systemName?: string;
-  envTypes: string;
+export interface Answers {
+  system?: string;
   serviceName: string;
+  description: string;
+  nodeJsRuntime: number;
+  environment1: string;
+  environment2: string;
+  environment3: string;
+  // Scheduled handler
   useScheduledHandler: boolean;
   scheduledHandlerRate?: string;
+  scheduledHandlerMemorySize?: number;
+  scheduledHandlerTimeout?: number;
+  // API
+  useApi: boolean;
+  apiMemorySize?: number;
+  apiTimeout?: number;
 }
 
 module.exports = class extends Generator {
-  private answers: Answers;
+  private appConfig: AppConfig;
 
   async prompting() {
     this.log(introduction);
 
-    const questions: Generator.Question[] = [
-      {
-        type: 'input',
-        name: 'systemName',
-        message:
-          'System name - this will be the first part of the component names (e.g. "hfs2"). It can be left empty if you only have one system in your AWS account, which would make the system name prefix redundant:',
-        default: 'system',
-      },
-      {
-        type: 'input',
-        name: 'envTypes',
-        message:
-          'Environments - a comma separated list of the environments that this service should support. Should normally be "dev,qa,live":',
-        default: 'dev,qa,live',
-      },
-      {
-        type: 'input',
-        name: 'serviceName',
-        message:
-          'Service name - this will identify the components belonging to this service. It will be used right after the environment part in the component names:',
-        default: 'sample-service',
-      },
-      {
-        type: 'confirm',
-        name: 'useScheduledHandler',
-        message:
-          'Scheduled Lambda - should the service include a Lambda that executes at fixed intervals:',
-        default: false,
-      },
-      {
-        when: (a) => a.useScheduledHandler,
-        type: 'input',
-        name: 'scheduledHandlerRate',
-        message:
-          'Scheduled Lambda - how often should it trigger (use syntax described here https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html):',
-        default: 'rate(1 minute)',
-      },
-    ];
+    const questions = getQuestions();
 
-    this.answers = await this.prompt<Answers>(questions);
+    const answers: Answers = await this.prompt<Answers>(questions);
+    this.appConfig = appConfigBuilder(answers);
   }
 
-  install() {
-    console.log(`Answers: ${JSON.stringify(this.answers)}`);
+  async writing() {
+    this.fs.copy(this.templatePath('./src'), this.destinationPath('./src'));
+    this.fs.copy(this.templatePath('./cdk'), this.destinationPath('./cdk'));
+    this.fs.copy(
+      this.templatePath('package.json'),
+      this.destinationPath('package.json'),
+      {
+        process: (content) => packageJsonTransformer(content, this.appConfig),
+      }
+    );
+    [
+      '.gitignore',
+      '.npmrc',
+      '.prettierrc',
+      'cdk.json',
+      'jest.config.js',
+      'tsconfig.json',
+      'webpack.config.js',
+      'yarn.lock',
+    ].forEach((f) =>
+      this.fs.copy(this.templatePath(f), this.destinationPath(f))
+    );
+    this.fs.writeJSON(
+      this.destinationPath('./cdk/appConfig.json'),
+      this.appConfig
+    );
+  }
+
+  end() {
+    this.log(footer(this.appConfig));
   }
 };
