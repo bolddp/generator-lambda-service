@@ -2,12 +2,17 @@ import * as cdk from '@aws-cdk/core';
 import * as iam from '@aws-cdk/aws-iam';
 import * as nodejs from '@aws-cdk/aws-lambda-nodejs';
 import * as logs from '@aws-cdk/aws-logs';
-import { LambdaServiceStackProps } from '../LambdaServiceStack';
 import { Duration, RemovalPolicy } from '@aws-cdk/core';
+import { Runtime } from '@aws-cdk/aws-lambda';
 
-export interface LambdaFunctionProps extends LambdaServiceStackProps {
+export interface LambdaFunctionProps {
+  awsAccountId: string;
+  nodeJsRuntime: Runtime;
+  id: (suffix?: string) => string;
   name: string;
   entryPoint: string;
+  memorySize: number;
+  timeout: number;
   policyStatements: iam.PolicyStatement[];
 }
 
@@ -46,9 +51,9 @@ export class LambdaFunction {
       props.id(`${props.name}-function`),
       {
         runtime: props.nodeJsRuntime,
-        memorySize: props.schedulerConfig.memorySize,
+        memorySize: props.memorySize,
         functionName: props.id(props.name),
-        timeout: Duration.seconds(props.schedulerConfig.timeout),
+        timeout: Duration.seconds(props.timeout),
         entry: props.entryPoint,
         handler: 'handler',
         role,

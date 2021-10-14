@@ -14,6 +14,12 @@
     "memorySize": 256,
     "timeout": 30
   },
+  "kinesisConsumerConfig": {
+    "enabled": true,
+    "memorySize": 256,
+    "timeout": 30,
+    "kinesisStreamArn": "kinesis-stream-arn"
+  },
   "environments": [
     {
       "envType": "dev",

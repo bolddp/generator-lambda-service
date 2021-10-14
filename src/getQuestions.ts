@@ -52,7 +52,7 @@ export const getQuestions = (): Generator.Question[] => {
       type: 'confirm',
       name: 'useScheduledHandler',
       message:
-        'Scheduled Lambda - should the service include a Lambda that executes at fixed intervals:',
+        '**** Scheduled Lambda - should the service include a Lambda that executes at fixed intervals:',
       default: false,
     },
     {
@@ -83,7 +83,7 @@ export const getQuestions = (): Generator.Question[] => {
       type: 'confirm',
       name: 'useApi',
       message:
-        'API Lambda - should the service include a Lambda exposes a REST API:',
+        '**** API Lambda - should the service include a Lambda exposes a REST API:',
       default: false,
     },
     {
@@ -100,6 +100,37 @@ export const getQuestions = (): Generator.Question[] => {
       name: 'apiTimeout',
       message: 'API Lambda - what timeout (seconds) should the Lambda have:',
       default: 10,
+    },
+    {
+      type: 'confirm',
+      name: 'useKinesisConsumer',
+      message:
+        '**** Kinesis consumer Lambda - should the service include a Lambda that consumes a Kinesis stream:',
+      default: false,
+    },
+    {
+      when: (a) => a.useKinesisConsumer,
+      type: 'number',
+      name: 'kinesisConsumerMemorySize',
+      message:
+        'Kinesis consumer Lambda - how much memory (Mb) should be allocated to the Lambda:',
+      default: 256,
+    },
+    {
+      when: (a) => a.useKinesisConsumer,
+      type: 'number',
+      name: 'kinesisConsumerTimeout',
+      message:
+        'Kinesis consumer Lambda - what timeout (seconds) should the Lambda have:',
+      default: 10,
+    },
+    {
+      when: (a) => a.useKinesisConsumer,
+      type: 'input',
+      name: 'kinesisConsumerStreamArn',
+      message:
+        "Kinesis consumer Lambda - what's the ARN of the Kinesis stream that should be consumed (you can use placeholder {envType}, {awsAccountId} and {awsRegion} to allow for different ARN's for each of the provided environment):",
+      default: 'kinesis-stream-arn',
     },
   ];
 };

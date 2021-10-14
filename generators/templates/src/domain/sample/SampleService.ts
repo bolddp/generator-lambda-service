@@ -1,6 +1,7 @@
 import { Log } from '../../utils/Log';
 import { Singleton } from '../../utils/Singleton';
 import { Sample } from './Sample';
+import { SampleKinesisItem } from './SampleKinesisItem';
 import { SampleRepository, sampleRepositoryInstance } from './SampleRepository';
 
 export class SampleService {
@@ -13,6 +14,12 @@ export class SampleService {
 
   performScheduledMaintenance() {
     this.log.info('performing scheduled maintenance...');
+  }
+
+  processKinesisItems(items: SampleKinesisItem[]) {
+    for (const item of items) {
+      this.log.info(`Kinesis item: ${JSON.stringify(item)}`);
+    }
   }
 
   getById(sampleId: string): Sample {

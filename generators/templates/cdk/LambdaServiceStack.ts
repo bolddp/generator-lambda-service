@@ -1,7 +1,9 @@
 import { Runtime } from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
-import { Api, ApiConfig } from './constructs/Api';
-import { Scheduler, SchedulerConfig } from './constructs/Scheduler';
+import { ApiConfig, KinesisConsumerConfig, SchedulerConfig } from './AppConfig';
+import { Api } from './constructs/Api';
+import { KinesisConsumer } from './constructs/KinesisConsumer';
+import { Scheduler } from './constructs/Scheduler';
 
 export interface LambdaServiceStackProps extends cdk.StackProps {
   system: string;
@@ -13,7 +15,13 @@ export interface LambdaServiceStackProps extends cdk.StackProps {
   nodeJsRuntime: Runtime;
   schedulerConfig: SchedulerConfig;
   apiConfig: ApiConfig;
+  kinesisConsumerConfig: KinesisConsumerConfig;
   id: (suffix?: string) => string;
+  /**
+   * Function that replaces placeholders {awsAccountId}, {awsRegion} and {envType} in a string
+   * with the values of the current configuration.
+   */
+  replace: (input: string) => string;
 }
 
 export class LambdaServiceStack extends cdk.Stack {
@@ -32,6 +40,9 @@ export class LambdaServiceStack extends cdk.Stack {
     }
     if (props.apiConfig.enabled) {
       new Api(this, props);
+    }
+    if (props.kinesisConsumerConfig.enabled) {
+      new KinesisConsumer(this, props);
     }
   }
 }

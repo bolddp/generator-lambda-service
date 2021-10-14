@@ -5,21 +5,18 @@ import { LambdaServiceStackProps } from '../LambdaServiceStack';
 import { LambdaFunction } from './LambdaFunction';
 import { schedulerPolicyStatements } from '../AppCustomization';
 
-export interface SchedulerConfig {
-  enabled: boolean;
-  memorySize: number;
-  timeout: number;
-  rate: string;
-}
-
 export class Scheduler extends cdk.Construct {
   constructor(stack: cdk.Stack, props: LambdaServiceStackProps) {
     super(stack, props.id('scheduler'));
 
     const lambda = new LambdaFunction(stack, {
-      ...props,
+      awsAccountId: props.awsAccountId,
+      nodeJsRuntime: props.nodeJsRuntime,
+      id: props.id,
       name: 'scheduler',
       entryPoint: './dist/webpack/scheduledHandler.js',
+      memorySize: props.schedulerConfig.memorySize!,
+      timeout: props.schedulerConfig.timeout!,
       policyStatements: schedulerPolicyStatements(props),
     });
 

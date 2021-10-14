@@ -6,17 +6,20 @@ export interface AppEnvironment {
   awsRegion: string;
 }
 
-export interface ApiConfig {
+export interface ComponentConfig {
   enabled: boolean;
   memorySize?: number;
   timeout?: number;
 }
 
-export interface SchedulerConfig {
-  enabled: boolean;
-  memorySize?: number;
-  timeout?: number;
+export interface ApiConfig extends ComponentConfig {}
+
+export interface SchedulerConfig extends ComponentConfig {
   rate?: string;
+}
+
+export interface KinesisConsumerConfig extends ComponentConfig {
+  kinesisStreamArn?: string;
 }
 
 export interface AppConfig {
@@ -27,6 +30,7 @@ export interface AppConfig {
   environments: AppEnvironment[];
   schedulerConfig: SchedulerConfig;
   apiConfig: ApiConfig;
+  kinesisConsumerConfig: KinesisConsumerConfig;
 }
 
 export const appConfigBuilder = (answers: Answers): AppConfig => {
@@ -50,6 +54,16 @@ export const appConfigBuilder = (answers: Answers): AppConfig => {
           enabled: true,
           memorySize: answers.apiMemorySize,
           timeout: answers.apiTimeout,
+        }
+      : {
+          enabled: false,
+        },
+    kinesisConsumerConfig: answers.useKinesisConsumer
+      ? {
+          enabled: true,
+          memorySize: answers.kinesisConsumerMemorySize,
+          timeout: answers.kinesisConsumerTimeout,
+          kinesisStreamArn: answers.kinesisConsumerStreamArn,
         }
       : {
           enabled: false,

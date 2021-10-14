@@ -3,25 +3,8 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { LambdaServiceStack } from './LambdaServiceStack';
 import appConfig from './appConfig.json';
-import { SchedulerConfig } from './constructs/Scheduler';
 import { Runtime } from '@aws-cdk/aws-lambda';
-import { ApiConfig } from './constructs/Api';
-
-export interface AppEnvironment {
-  envType: string;
-  awsAccountId: string;
-  awsRegion: string;
-}
-
-export interface AppConfig {
-  system: string;
-  serviceName: string;
-  description: string;
-  nodeJsRuntime: Runtime;
-  environments: AppEnvironment[];
-  schedulerConfig: SchedulerConfig;
-  apiConfig: ApiConfig;
-}
+import { AppConfig } from './AppConfig';
 
 export class App extends cdk.App {
   constructor(config: AppConfig) {
@@ -38,10 +21,16 @@ export class App extends cdk.App {
         nodeJsRuntime: config.nodeJsRuntime,
         schedulerConfig: config.schedulerConfig,
         apiConfig: config.apiConfig,
+        kinesisConsumerConfig: config.kinesisConsumerConfig,
         id: (suffix) =>
           `${config.system}-${account.envType}-${config.serviceName}${
             suffix ? `-${suffix}` : ''
           }`,
+        replace: (input) =>
+          input
+            .replace(/\{envType\}/g, account.envType)
+            .replace(/\{awsAccountId\}/g, account.awsAccountId)
+            .replace(/\{awsRegion\}/g, account.awsRegion),
       });
     }
   }

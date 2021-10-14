@@ -6,7 +6,7 @@
     "clean": "node ./node_modules/rimraf/bin.js ./dist ./cdk.out",
     "prebuild": "npm run clean",
     "webpack": "cross-env NODE_ENV=${NODE_ENV:-production} webpack",
-    "build": "tsc && npm run webpack && cdk ls",
+    "build": "tsc && npm run webpack && cdk synth",
     "local-api": "tsc && node ./dist/api/server.js"
   },
   "author": "",

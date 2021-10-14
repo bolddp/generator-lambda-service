@@ -38,3 +38,16 @@ export const apiPolicyStatements = (
   //   ],
   // }),
 ];
+
+export const kinesisConsumerPolicyStatements = (
+  props: LambdaServiceStackProps
+): iam.PolicyStatement[] => [
+  // Sample policy that gives the Kinesis consumer publish access to publish data to all SNS topic in the environment
+  // new iam.PolicyStatement({
+  //   actions: ['sns:*'],
+  //   effect: iam.Effect.ALLOW,
+  //   resources: [
+  //     `arn:aws:sns:${props.awsRegion}:${props.awsAccountId}:${props.system}-${props.envType}-*`,
+  //   ],
+  // }),
+];

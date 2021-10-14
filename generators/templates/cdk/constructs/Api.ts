@@ -4,20 +4,18 @@ import { LambdaServiceStackProps } from '../LambdaServiceStack';
 import { LambdaFunction } from './LambdaFunction';
 import { apiPolicyStatements } from '../AppCustomization';
 
-export interface ApiConfig {
-  enabled: boolean;
-  memorySize: number;
-  timeout: number;
-}
-
 export class Api extends cdk.Construct {
   constructor(stack: cdk.Stack, props: LambdaServiceStackProps) {
     super(stack, props.id('api'));
 
     const lambda = new LambdaFunction(stack, {
-      ...props,
+      awsAccountId: props.awsAccountId,
+      nodeJsRuntime: props.nodeJsRuntime,
+      id: props.id,
       name: 'api',
       entryPoint: './dist/webpack/apiHandler.js',
+      memorySize: props.apiConfig.memorySize!,
+      timeout: props.apiConfig.timeout!,
       policyStatements: apiPolicyStatements(props),
     });
 

@@ -1,6 +1,5 @@
 import { Handler, ScheduledEvent } from 'aws-lambda';
 import { sampleServiceInstance } from './domain/sample/SampleService';
-import { Log } from './utils/Log';
 
 const sampleService = sampleServiceInstance.get();
 
