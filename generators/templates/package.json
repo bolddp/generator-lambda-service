@@ -6,22 +6,23 @@
     "clean": "node ./node_modules/rimraf/bin.js ./dist ./cdk.out",
     "prebuild": "npm run clean",
     "webpack": "cross-env NODE_ENV=${NODE_ENV:-production} webpack",
-    "build": "tsc && npm run webpack && cdk ls",
+    "build": "tsc && npm run webpack && cdk synth",
     "local-api": "tsc && node ./dist/api/server.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@aws-cdk/aws-events": "1.126.0",
     "aws-lambda": "1.0.6",
     "aws-serverless-express": "3.4.0",
     "compression": "1.7.4",
     "cors": "2.8.5",
+    "esbuild": "0.13.6",
     "express": "4.17.1"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.126.0",
     "@aws-cdk/aws-apigateway": "1.126.0",
+    "@aws-cdk/aws-events": "1.126.0",
     "@aws-cdk/aws-events-targets": "1.126.0",
     "@aws-cdk/aws-iam": "1.126.0",
     "@aws-cdk/aws-lambda": "1.126.0",

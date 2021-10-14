@@ -18,7 +18,7 @@
     {
       "envType": "dev",
       "awsAccountId": "853290886133",
-      "awsRegion": "eu-north-1"
+      "awsRegion": "eu-west-1"
     },
     {
       "envType": "qa",
